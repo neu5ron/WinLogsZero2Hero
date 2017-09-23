@@ -1,1 +1,1 @@
-# WinLogsZero2Hero
+# WinLogsZero2Hero talk links and scripts
