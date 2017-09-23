@@ -1,0 +1,36 @@
+1) Create GPO called "audit-wmi-tracing"
+2) Under "Scope" tab set "Security Filtering to "Authenticated Users"
+3) Under "Details" tab set "GPO Status" to "User configuration settings disabled"
+4) In the "Settings" tab edit the configurationa and browse to "Prefernces/Control Panel Settings/Scheduled Tasks" and right click, select New, "Scheduled Task (Windows Vista and later)"
+5) Under the "General" tab
+    Action:Replace
+    Name:set_wmi_trace
+    When running the task, use the following user account:NT AUTHORITY/SYSTEM
+    Run only when user is logged on:CHECK
+    Run with highest privileges:CHECK
+    Hidden:CHECK
+6) Under the "Triggers" tab, select anything that you desire for your environment.
+    #recommend using a daily trigger
+7) Under the "Actions" tab create the following "New" actions:
+    7.a)
+        Action:Start a program
+        Program/script:%SystemRoot%\system32\wevtutil.exe
+        Add arguments (optional):sl "Microsoft-Windows-WMI-Activity/Trace" /e:false /q:true
+    7.b)
+        Action:Start a program
+        Program/script:%SystemRoot%\system32\wevtutil.exe
+        Add arguments (optional):sl "Microsoft-Windows-WMI-Activity/Trace" /rt:false
+    7.c)
+        Action:Start a program
+        Program/script:%SystemRoot%\system32\wevtutil.exe
+        Add arguments (optional):sl "Microsoft-Windows-WMI-Activity/Trace" /ms:35000000
+    7.d)
+        Action:Start a program
+        Program/script:%SystemRoot%\system32\wevtutil.exe
+        Add arguments (optional):sl "Microsoft-Windows-WMI-Activity/Trace" /e:true /q:true
+8) Under the "Conditions" tab, select anything that you desire for your environment.
+    #recommend just leaving the defaults
+9) Under the "Settings" tab, select anything that you desire for your environment.
+    #recommend to check the boxes for stop task if it runs longer than 1 hour and if task does not end than force it to close
+10) Under the "Conditions" tab, select anything that you desire for your environment.
+    Remove this item when it is no longer applied:CHECK
