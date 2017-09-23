@@ -1,7 +1,7 @@
 1) Create GPO called "audit-wmi-tracing"
 2) Under "Scope" tab set "Security Filtering to "Authenticated Users"
 3) Under "Details" tab set "GPO Status" to "User configuration settings disabled"
-4) In the "Settings" tab edit the configurationa and browse to "Prefernces/Control Panel Settings/Scheduled Tasks" and right click, select New, "Scheduled Task (Windows Vista and later)"
+4) In the "Settings" tab edit the configuration and browse to "Preferences/Control Panel Settings/Scheduled Tasks" and right click, select New, "Scheduled Task (Windows Vista and later)"
 5) Under the "General" tab
     Action:Replace
     Name:set_wmi_trace
