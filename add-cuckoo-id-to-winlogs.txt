@@ -3,4 +3,4 @@ file_path_id_for_win_logs = "C:\\id.txt"
 cust_file = open(file_path_id_for_win_logs, 'w')
        cust_file.write(str(self.config.id))
        cust_file.close
-# Then you will add the file path above the cuckoo-nxlog.conf
+# Then you will add the file path above the nxlog.conf
