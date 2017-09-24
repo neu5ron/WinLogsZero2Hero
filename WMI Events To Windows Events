@@ -1,0 +1,29 @@
+#GET LIST OF ALL WMI EVENTS Get-WmiObject -Namespace "root" -Query "SELECT * FROM meta_class WHERE __This ISA '__Event'"
+#http://www.powershellmagazine.com/2013/01/15/pstip-list-all-wmi-event-classes/
+#Good Tutorial 
+#https://learn-powershell.net/2013/08/14/powershell-and-events-permanent-wmi-event-subscriptions/
+#More Namespaces 
+#Get-WMIObject -class __Namespace -namespace root | Format-Table name
+
+$filter = ([wmiclass]"\\.\root\subscription:__EventFilter").CreateInstance();
+$filter.QueryLanguage = "WQL";
+$filter.Query = "SELECT * FROM __InstanceOperationEvent WHERE BLAH";
+$filter.Name = "My Filter Name";
+$filter.EventNamespace = 'root\StandardCimv2';
+$result = $instanceFilter.Put();
+$filterx = $result.Path;
+$consumer = ([wmiclass]"\\.\root\subscription:NTEventLogEventConsumer").CreateInstance();
+$consumer.Name = 'ArpConsumer';
+$consumer.Category = 1
+$consumer.EventType=4;
+$consumer.EventID = 7754;
+$consumer.SourceName = "TEST ARP";
+$consumer.NumberOfInsertionStrings = 2;
+$consumer.InsertionStringTemplates = {"This is my message: %TargetInstance.MyProperty%"};
+$result = $instanceConsumer.Put()
+$consumerx = $result.Path
+$binding = ([wmiclass]"\\.\root\subscription:__FilterToConsumerBinding").CreateInstance()
+$binding.Filter = $newFilter
+$binding.Consumer = $newConsumer
+$result = $instanceBinding.Put()
+$bindingx = $result.Path
