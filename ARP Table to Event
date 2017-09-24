@@ -1,0 +1,10 @@
+if([System.Diagnostics.EventLog]::SourceExists("ARP Status Script")){
+$x = Get-NetIPInterface | where-object {$_.ConnectionState -eq "Connected" -and $_.InterfaceAlias -notlike "*VMware*" -and $_.InterfaceAlias -notlike "*Loopback*"} | get-netneighbor | select-object -property InterfaceAlias,LinkLayerAddress,IPAddress
+$x = [system.String]::Join("`r`n", $x)
+write-eventlog -logname "System" -source "ARP Status Script" -message $x -EventId 10001
+}Else{
+$x = Get-NetIPInterface | where-object {$_.ConnectionState -eq "Connected" -and $_.InterfaceAlias -notlike "*VMware*" -and $_.InterfaceAlias -notlike "*Loopback*"} | get-netneighbor | select-object -property InterfaceAlias,LinkLayerAddress,IPAddress
+$x = [system.String]::Join("`r`n", $x)
+New-EventLog –LogName "System" –Source “ARP Status Script”
+write-eventlog -logname "System" -source "ARP Status Script" -message $x -EventId 10001
+}
