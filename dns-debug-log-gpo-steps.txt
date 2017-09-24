@@ -1,0 +1,66 @@
+# Set DNS Debug Logging.
+# In order to set log immediately use "0x8000" vs windows default 8KB buffer. So, you would specify "0x8000f321"
+# Just import the scheduled task IN ORDER of loglevel, then logfile, then logsize!
+# Max size is 500000000 500MB but use 50000000 for 50MB
+1) Create GPO called "audit-dns-via-debug"
+2) Under "Scope" tab set "Security Filtering to "Authenticated Users"
+3) Under "Details" tab set "GPO Status" to "User configuration settings disabled"
+4) Create
+    4.1) Task named "set_dns_debug_log"
+    # Then for each task set following:
+    4.a) When running the task, user the following user account:"NT AUTHORITY/SYSTEM"
+    4.b) Check "Run whether user is logged on or not" and "Run with highest privileges"
+    4.c) Check "Hidden"
+    4.d) Configure for:"Windows Vista or Windows Server 2008"
+    4.e) Any Triggers you want, that make sense
+    4.f) Any Conditions you want, that make sense
+    4.g) Any Settings you want, that make sense
+    4.h) Common: check "Remove this item when it is no longer applied"
+    4.i) Common: check "Item-level targeting" and use:
+        Match value data
+        Any
+        HKEY_LOCAL_MACHINE
+        SYSTEM\ControlSet001\services\DNS
+        Start
+        REG_DWORD
+        00000002 Hexadeciaml
+5) For 4) need to set following under actions IN ORDER! IN ORDER! Don't ask how long took to troubleshoot why putting all the dnscmd commands in one line was not working
+    4.1) run:dnscmd paramter:/Config /LogLevel 0x8000f321
+    4.2) run:dnscmd paramter:/Config /LogFilePath "%WINDIR%\System32\dns\Dns.log"
+    4.3) run:dnscmd paramter:/Config /LogFileMaxSize 50000000
+#TODO:In scheduled task set to only run if connected to DOMAIN! using either site or start if only network in the scheduled task itself under Condition tab
+
+######### Windows DNS Debug Logging
+# %WINDIR%\System32\dns\Dns.log"
+# Debug Logging settings:
+# Log packets for debugging
+# Packet direction: Outgoing TCP & UDP
+# Packet direction: Incoming TCP & UDP
+# Packet contents: Queries/Transfer Request & Response
+# Packet contents: Updates Request & Response
+# Message logging key (for packets - other items use a subset of these fields):
+# 	Field #  Information         Values
+# 	-------  -----------         ------
+# 	   1     Date
+# 	   2     Time
+# 	   3     Thread ID
+# 	   4     Context
+# 	   5     Internal packet identifier
+# 	   6     UDP/TCP indicator
+# 	   7     Send/Receive indicator
+# 	   8     Remote IP
+# 	   9     Xid (hex)
+# 	  10     Query/Response      R = Response
+# 	                             blank = Query
+# 	  11     Opcode              Q = Standard Query
+# 	                             N = Notify
+# 	                             U = Update
+# 	                             ? = Unknown
+# 	  12     [ Flags (hex)
+# 	  13     Flags (char codes)  A = Authoritative Answer
+# 	                             T = Truncated Response
+# 	                             D = Recursion Desired
+# 	                             R = Recursion Available
+# 	  14     ResponseCode ]
+# 	  15     Question Type
+# 	  16     Question Name
